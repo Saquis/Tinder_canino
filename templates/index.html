@@ -273,34 +273,37 @@ function updatePetProfile() {
         formData.append("video", videoFile);
     }
 
-    // agregacion de las funciones de respuesta de ID
-        function loadPetData(petId) {
-        fetch(`${API_BASE}/api/mascotas/${petId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(response => {
-            console.log(response);
-            return response.json();
-        })
-    
-        
-        .then(data => {
-            document.getElementById("edit-pet-name").value = data.nombre;
-            document.getElementById("edit-pet-age").value = data.edad;
-            document.getElementById("edit-pet-race").value = data.raza;
-            document.getElementById("edit-pet-description").value = data.descripcion;
-            document.getElementById("edit-pet-especie").value = data.especie;
-            document.getElementById("edit-pet-personalidad").value = data.personalidad;
-            document.getElementById("edit-pet-intereses").value = data.intereses;
-            document.getElementById("edit-pet-estado-salud").value = data.estado_salud;
-        });
-    }
+    fetch(`${API_BASE}/api/mascotas/${petId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.mensaje);
 
-}
-     
+        // Limpiar los campos del formulario de edición de mascota después de actualizar
+        document.getElementById("edit-pet-name").value = "";
+        document.getElementById("edit-pet-age").value = "";
+        document.getElementById("edit-pet-race").value = "";
+        document.getElementById("edit-pet-description").value = "";
+        document.getElementById("edit-pet-especie").value = "";
+        document.getElementById("edit-pet-personalidad").value = "";
+        document.getElementById("edit-pet-intereses").value = "";
+        document.getElementById("edit-pet-estado-salud").value = "";
+        document.getElementById("edit-pet-image").value = "";
+        document.getElementById("edit-pet-video").value = "";
+
+        // Esconder el formulario de edición
+        document.getElementById("edit-pet-form").style.display = "none";
+    })
+    .catch(error => {
+        console.error('Error al actualizar el perfil de la mascota:', error);
+        alert("Ocurrió un error al actualizar el perfil de la mascota.");
+    });
+}   
     
 </script>
         <!-- Funcionalidad de Match -->
@@ -342,6 +345,9 @@ function updatePetProfile() {
                     token = data.access_token;
                     localStorage.setItem("token", token);
                     alert("¡Login exitoso!");
+                    // Limpiar los campos del formulario de login
+            document.getElementById("login-email").value = "";
+            document.getElementById("login-password").value = "";
                     // Asigna el ID de la mascota del usuario autenticado aquí, podrías cargarlo de la base de datos
                     fetch(`${API_BASE}/api/usuarios/perfil`, {
                         method: 'GET',
@@ -414,6 +420,11 @@ function updatePetProfile() {
             .then(response => response.json())
             .then(data => {
                 alert(data.mensaje);
+                // Limpiar los campos del formulario de registro de usuario
+        document.getElementById("user-name").value = "";
+        document.getElementById("user-email").value = "";
+        document.getElementById("user-password").value = "";
+        document.getElementById("user-register-date").value = "";
             });
         }
         
@@ -479,6 +490,12 @@ function updatePetProfile() {
             .then(data => {
                 alert(data.mensaje);
                 loadPets();
+                // Limpiar los campos del formulario de registro de mascota
+        document.getElementById("pet-name").value = "";
+        document.getElementById("pet-age").value = "";
+        document.getElementById("pet-race").value = "";
+        document.getElementById("pet-description").value = "";
+        document.getElementById("pet-gender").selectedIndex = 0;
             });
         }
         // Función para cargar la lista de mascotas
